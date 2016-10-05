@@ -27,7 +27,7 @@ func (t *myChaincode) Invoke(stub *shim.ChaincodeStub, function string, args []s
 	if function == "init" {
 		return t.Init(stub, "init", args)
 	} else if function == "write" {
-		return t.write(stub, args)
+		return t.Write(stub, args)
 	}
 	return nil, errors.New("Received unknown invoke function name")
 }
@@ -36,7 +36,7 @@ func (t *myChaincode) Invoke(stub *shim.ChaincodeStub, function string, args []s
 
 
 // Init takes a string and int. These are stored as a key/value pair in the state
-func (t *myChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
+func (t *myChaincode) Init(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 
 	if len(args) != 1 {
 			 return nil, errors.New("Incorrect number of arguments. Expecting 1")
@@ -52,9 +52,9 @@ func (t *myChaincode) Init(stub shim.ChaincodeStubInterface, function string, ar
 }
 
 // Invoke is a no-op
-func (t *myChaincode) Write(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
+func (t *myChaincode) Write(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
 	var info issueInfo
-	var ammount int
+	var amount int
 	var data []string
 	var err error
 
@@ -65,12 +65,12 @@ func (t *myChaincode) Write(stub shim.ChaincodeStubInterface, function string, a
 	// Initialize the chaincode
 	//data = args[0]
 	//minfo, err := json.Unmarshal([]byte(data, &info)
-	ammount, err = strconv.Atoi(args[2])
+	amount, err = strconv.Atoi(args[2])
 	//if err != nil {
 	//	return nil, errors.New("Expecting integer value for asset holding")
 	//}
-	fmt.Printf("ammount = %d\n", ammount)
-	fmt.Printf("%#v\n", minfo)
+	fmt.Printf("ammount = %d\n", amount)
+	//fmt.Printf("%#v\n", minfo)
 
 	// Write the state to the ledger - this put is legal within Run
 	err = stub.PutState("abc", []byte(strconv.Itoa(amount)))
