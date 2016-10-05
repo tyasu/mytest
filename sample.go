@@ -21,8 +21,8 @@ type issueInfo struct {
   createdAt string `json:"createdAt"`
 }
 
-func (t *myChaincode) Invoke(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
-    fmt.Println("invoke is running " + function +", with args",len(args))
+func (t *myChaincode) Run(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
+    fmt.Println("Run is running " + function +", with args",len(args))
 
 	if function == "init" {
 		return t.Init(stub, "init", args)
