@@ -52,9 +52,9 @@ func (t *myChaincode) Init(stub *shim.ChaincodeStub, function string, args []str
 
 // Invoke is a no-op
 func (t *myChaincode) Write(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
-	var info issueInfo
+	//var info issueInfo
 	var amount int
-	var data []string
+	//var data []string
 	var err error
 
 	if len(args) != 4 {
