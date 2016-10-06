@@ -1,10 +1,10 @@
 package main
 
 import (
+	  "encoding/json"
 		"errors"
 		"fmt"
 		"github.com/hyperledger/fabric/core/chaincode/shim"
-		"strconv"
 )
 
 // myChaincode example simple Chaincode implementation
@@ -68,7 +68,12 @@ func (t *myChaincode) Write(stub *shim.ChaincodeStub, args []string) ([]byte, er
 		return nil, errors.New("Incorrect number of arguments. Expecting 2")
 	}
 
-	data = args[0]
+	data.thing = args[0]
+	data.madeBy = args[1]
+	data.amount = args[2]
+	data.createdAt = args[3]
+
+
 	fmt.Printf("data = %d\n", data)
 
 	// Write the state to the ledger - this put is legal within Run
