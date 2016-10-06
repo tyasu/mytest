@@ -1,7 +1,6 @@
 package main
 
 import (
-		"encoding/json"
 		"errors"
 		"fmt"
 		"github.com/hyperledger/fabric/core/chaincode/shim"
@@ -14,12 +13,13 @@ type myChaincode struct {
 
 
 //json data format
-type issueInfo struct {
-	thing string `json:"currency"`
-	madeBy string `json:"issuedBy"`
-	ammount string `json:"ammount"`
+type Info struct {
+	thing string `json:"thing"`
+	madeBy string `json:"madeBy"`
+	amount string `json:"amount"`
   createdAt string `json:"createdAt"`
 }
+
 
 func (t *myChaincode) Invoke(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
     fmt.Println("Invoke is running " + function +", with args",len(args))
@@ -27,7 +27,7 @@ func (t *myChaincode) Invoke(stub *shim.ChaincodeStub, function string, args []s
 	if function == "init" {
 		return t.Init(stub, "init", args)
 	} else if function == "write" {
-		return t.write(stub, args)
+		return t.Write(stub, args)
 	}
 	return nil, errors.New("Received unknown invoke function name")
 }
@@ -36,13 +36,21 @@ func (t *myChaincode) Invoke(stub *shim.ChaincodeStub, function string, args []s
 
 
 // Init takes a string and int. These are stored as a key/value pair in the state
-func (t *myChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
+func (t *myChaincode) Init(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
+
+var info Info
+
+info.thing="apple"
+info.madeBy="me"
+info.amount="1"
+info.createdAt="2016"
 
 	if len(args) != 1 {
 			 return nil, errors.New("Incorrect number of arguments. Expecting 1")
 	 }
 
-	 err := stub.PutState("hello_world", []byte(args[0]))
+	 jsonAsBytes, _ := json.Marshal(info)
+	 err := stub.PutState("data", jsonAsBytes)
 	 if err != nil {
 			 return nil, err
 	 }
@@ -52,28 +60,20 @@ func (t *myChaincode) Init(stub shim.ChaincodeStubInterface, function string, ar
 }
 
 // Invoke is a no-op
-func (t *myChaincode) Write(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
-	var info issueInfo
-	var ammount int
-	var data []string
+func (t *myChaincode) Write(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+	var data Info
 	var err error
 
 	if len(args) != 4 {
 		return nil, errors.New("Incorrect number of arguments. Expecting 2")
 	}
 
-	// Initialize the chaincode
-	//data = args[0]
-	//minfo, err := json.Unmarshal([]byte(data, &info)
-	ammount, err = strconv.Atoi(args[2])
-	//if err != nil {
-	//	return nil, errors.New("Expecting integer value for asset holding")
-	//}
-	fmt.Printf("ammount = %d\n", ammount)
-	fmt.Printf("%#v\n", minfo)
+	data = args[0]
+	fmt.Printf("data = %d\n", data)
 
 	// Write the state to the ledger - this put is legal within Run
-	err = stub.PutState("abc", []byte(strconv.Itoa(amount)))
+	jsonAsBytes, _ := json.Marshal(data)
+	err = stub.PutState("data", jsonAsBytes)
 	if err != nil {
 		return nil, errors.New("Error putting data on ledger")
 }
@@ -103,6 +103,7 @@ func (t *myChaincode) read(stub *shim.ChaincodeStub, args []string) ([]byte, err
 
     key = args[0]
     valAsbytes, err := stub.GetState(key)
+
     if err != nil {
         jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
         return nil, errors.New(jsonResp)
