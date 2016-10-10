@@ -27,8 +27,9 @@ func (t *myChaincode) Invoke(stub *shim.ChaincodeStub, function string, args []s
 	if function == "init" {
 		return t.Init(stub, "init", args)
 	} else if function == "write" {
-		return t.Write(stub, args)
+		return t.write(stub, args)
 	}
+	fmt.Println("invoke did not find func: " + function)
 	return nil, errors.New("Received unknown invoke function name")
 }
 
@@ -60,7 +61,7 @@ info.createdAt="2016"
 }
 
 // Invoke is a no-op
-func (t *myChaincode) Write(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+func (t *myChaincode) write(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
 	var data Info
 	var err error
 
