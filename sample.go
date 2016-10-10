@@ -11,7 +11,6 @@ import (
 type myChaincode struct {
 }
 
-
 //json data format
 type Info struct {
 	thing string `json:"thing"`
@@ -20,6 +19,15 @@ type Info struct {
   createdAt string `json:"createdAt"`
 }
 
+// ============================================================================================================================
+// Main
+// ============================================================================================================================
+func main() {
+	err := shim.Start(new(myChaincode))
+	if err != nil {
+		fmt.Printf("Error starting chaincode: %s", err)
+	}
+}
 
 // Init takes a string and int. These are stored as a key/value pair in the state
 func (t *myChaincode) Init(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
@@ -114,12 +122,4 @@ func (t *myChaincode) read(stub *shim.ChaincodeStub, args []string) ([]byte, err
     }
 
     return valAsbytes, nil
-}
-
-
-func main() {
-	err := shim.Start(new(myChaincode))
-	if err != nil {
-		fmt.Printf("Error starting chaincode: %s", err)
-	}
 }
