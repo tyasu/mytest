@@ -17,7 +17,7 @@ type Info struct {
 	thing string `json:"thing"`
 	madeBy string `json:"madeBy"`
 	amount string `json:"amount"`
-  createdAt string `json:"createdAt"`
+  createdAt int `json:"createdAt"`
 }
 
 
