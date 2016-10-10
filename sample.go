@@ -21,21 +21,6 @@ type Info struct {
 }
 
 
-func (t *myChaincode) Invoke(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
-    fmt.Println("Invoke is running " + function +", with args",len(args))
-
-	if function == "init" {
-		return t.Init(stub, "init", args)
-	} else if function == "write" {
-		return t.write(stub, args)
-	}
-	fmt.Println("invoke did not find func: " + function)
-	return nil, errors.New("Received unknown invoke function name")
-}
-
-
-
-
 // Init takes a string and int. These are stored as a key/value pair in the state
 func (t *myChaincode) Init(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 
@@ -59,6 +44,19 @@ info.createdAt="2016"
 	 return nil, nil
 
 }
+
+func (t *myChaincode) Invoke(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
+    fmt.Println("Invoke is running " + function +", with args",len(args))
+
+	if function == "init" {
+		return t.Init(stub, "init", args)
+	} else if function == "write" {
+		return t.write(stub, args)
+	}
+	fmt.Println("invoke did not find func: " + function)
+	return nil, errors.New("Received unknown invoke function name")
+}
+
 
 // Invoke is a no-op
 func (t *myChaincode) write(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
