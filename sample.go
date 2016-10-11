@@ -7,8 +7,8 @@ import (
 		"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
-// myChaincode example simple Chaincode implementation
-type myChaincode struct {
+// SimpleChaincode example simple Chaincode implementation
+type SimpleChaincode struct {
 }
 
 //json data format
@@ -23,14 +23,14 @@ type Info struct {
 // Main
 // ============================================================================================================================
 func main() {
-	err := shim.Start(new(myChaincode))
+	err := shim.Start(new(SimpleChaincode))
 	if err != nil {
 		fmt.Printf("Error starting chaincode: %s", err)
 	}
 }
 
 // Init takes a string and int. These are stored as a key/value pair in the state
-func (t *myChaincode) Init(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
+func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 
 var info Info
 
@@ -53,7 +53,7 @@ info.createdAt="2016"
 
 }
 
-func (t *myChaincode) Invoke(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
+func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
     fmt.Println("Invoke is running " + function +", with args",len(args))
 
 	if function == "init" {
@@ -67,7 +67,7 @@ func (t *myChaincode) Invoke(stub *shim.ChaincodeStub, function string, args []s
 
 
 // Invoke is a no-op
-func (t *myChaincode) write(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+func (t *SimpleChaincode) write(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
 	var data Info
 	var err error
 
@@ -93,7 +93,7 @@ func (t *myChaincode) write(stub *shim.ChaincodeStub, args []string) ([]byte, er
 }
 
 // Query callback representing the query of a chaincode
-func (t *myChaincode) Query(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
+func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
 	fmt.Println("query is running " + function)
 
 	// Handle different functions
@@ -105,7 +105,7 @@ func (t *myChaincode) Query(stub *shim.ChaincodeStub, function string, args []st
 	return nil, errors.New("Received unknown function query")
 }
 
-func (t *myChaincode) read(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
+func (t *SimpleChaincode) read(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
     var key, jsonResp string
     var err error
 
