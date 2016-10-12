@@ -78,7 +78,7 @@ func (t *SimpleChaincode) write(stub *shim.ChaincodeStub, args []string) ([]byte
 	var time=tm.String();
 	// Write the state to the ledger - this put is legal within Run
 	jsonAsBytes, _ := json.Marshal(data)
-	err = stub.PutState(time, jsonAsBytes)
+	err = stub.PutState("me", jsonAsBytes)
 	if err != nil {
 		return nil, errors.New("Error putting data on ledger")
 }
