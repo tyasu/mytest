@@ -89,7 +89,7 @@ func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args 
 
 	// Handle different functions
 	if function == "read" {													//read a variable
-		info, err := read(stub, args)
+		info, err := t.read(stub, args)
 		if err != nil {
 			fmt.Println("Error Getting info")
 			return nil, err
