@@ -89,7 +89,19 @@ func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args 
 
 	// Handle different functions
 	if function == "read" {													//read a variable
-		return t.read(stub, args)
+		info, err := read(stub, args)
+		if err != nil {
+			fmt.Println("Error Getting info")
+			return nil, err
+		} else {
+			infoBytes, err1 := json.Marshal(&info)
+			if err1 != nil {
+				fmt.Println("Error marshalling the info")
+				return nil, err1
+			}	
+			fmt.Println("All success, returning the info")
+			return infoBytes, nil		 
+		}
 	}
 	fmt.Println("query did not find func: " + function)						//error
 
