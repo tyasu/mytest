@@ -4,6 +4,7 @@ import (
 	  "encoding/json"
 		"errors"
 		"fmt"
+		"time"
 		"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
@@ -63,7 +64,7 @@ func (t *SimpleChaincode) write(stub *shim.ChaincodeStub, args []string) ([]byte
 	var err error
 
 	if len(args) != 4 {
-		return nil, errors.New("Incorrect number of arguments. Expecting 2")
+		return nil, errors.New("Incorrect number of arguments. Expecting 4")
 	}
 
 	data.thing = args[0]
@@ -71,12 +72,12 @@ func (t *SimpleChaincode) write(stub *shim.ChaincodeStub, args []string) ([]byte
 	data.amount = args[2]
 	data.createdAt = args[3]
 
-
+	
 	fmt.Printf("data = %d\n", data)
-
+	tm := time.Now()
 	// Write the state to the ledger - this put is legal within Run
 	jsonAsBytes, _ := json.Marshal(data)
-	err = stub.PutState("data", jsonAsBytes)
+	err = stub.PutState(tm, jsonAsBytes)
 	if err != nil {
 		return nil, errors.New("Error putting data on ledger")
 }
