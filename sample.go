@@ -34,7 +34,7 @@ func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args [
 fmt.Println("Initializing data")
 var blank []string
 	blankBytes, _ := json.Marshal(&blank)
-	err := stub.PutState("data", blankBytes)
+	err := stub.PutState("key1", blankBytes)
     if err != nil {
         fmt.Println("Failed to initialize")
     }
@@ -72,6 +72,7 @@ func (t *SimpleChaincode) write(stub *shim.ChaincodeStub, args []string) ([]byte
 	data.createdAt = args[3]
 
 	jsonAsBytes, _ := json.Marshal(data)
+	fmt.Println(jsonAsBytes)
 	err = stub.PutState("key1", jsonAsBytes)
 	if err != nil {
 		return nil, errors.New("Error putting data on ledger")
