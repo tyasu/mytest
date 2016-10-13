@@ -118,14 +118,14 @@ func (t *SimpleChaincode) read(stub *shim.ChaincodeStub, args []string) (Info, e
     var err error
 		var info Info
 
-    key = "key1"
+    key = "args[0]"
     valAsbytes, err := stub.GetState(key)
     if err != nil {
 		fmt.Println("Error retrieving info " + key)
 		return info, errors.New("Error retrieving info " + key)
 	}
 	
-		err = json.Unmarshal(valAsbytes, &info)
+	err = json.Unmarshal(valAsbytes, &info)
     if err != nil {
         jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
         return info, errors.New(jsonResp)
