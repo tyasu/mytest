@@ -109,7 +109,7 @@ func (t *SimpleChaincode) read(stub *shim.ChaincodeStub, args []string) (Info, e
     var err error
 		var info Info
 
-    key = "args[0]"
+    key = args[0]
     valAsbytes, err := stub.GetState(key)
     if err != nil {
 		fmt.Println("Error retrieving info " + key)
