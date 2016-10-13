@@ -71,15 +71,6 @@ func (t *SimpleChaincode) write(stub *shim.ChaincodeStub, args []string) ([]byte
 	data.amount = args[2]
 	data.createdAt = args[3]
 
-	
-	fmt.Printf("data = %d\n", data)
-	//put keys
-	err = stub.PutState("keys", key1)
-		if err != nil {
-		fmt.Println("Error writting keys back")
-		return nil, errors.New("Error writing the keys back")
-		}
-		
 	jsonAsBytes, _ := json.Marshal(data)
 	err = stub.PutState("key1", jsonAsBytes)
 	if err != nil {
