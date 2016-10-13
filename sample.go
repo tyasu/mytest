@@ -71,6 +71,7 @@ func (t *SimpleChaincode) write(stub *shim.ChaincodeStub, args []string) ([]byte
 	data.amount = args[2]
 	data.createdAt = args[3]
 
+	fmt.Println(data)
 	jsonAsBytes, _ := json.Marshal(data)
 	fmt.Println(jsonAsBytes)
 	err = stub.PutState("key1", jsonAsBytes)
@@ -91,11 +92,13 @@ func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args 
 			fmt.Println("Error Getting info")
 			return nil, err
 		} else {
+			fmt.Println(info)
 			infoBytes, err1 := json.Marshal(&info)
 			if err1 != nil {
 				fmt.Println("Error marshalling the info")
 				return nil, err1
-			}	
+			}
+			fmt.Println(infoBytes)	
 			fmt.Println("All success, returning the info")
 			return infoBytes, nil		 
 		}
