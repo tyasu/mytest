@@ -4,7 +4,6 @@ import (
 	  "encoding/json"
 		"errors"
 		"fmt"
-		//"time"
 		"github.com/hyperledger/fabric/core/chaincode/shim"
 )
 
@@ -74,11 +73,15 @@ func (t *SimpleChaincode) write(stub *shim.ChaincodeStub, args []string) ([]byte
 
 	
 	fmt.Printf("data = %d\n", data)
-	//tm := time.Now()
-	//var time=tm.String();
-	// Write the state to the ledger - this put is legal within Run
+	//put keys
+	err = stub.PutState("keys", key1)
+		if err != nil {
+		fmt.Println("Error writting keys back")
+		return nil, errors.New("Error writing the keys back")
+		}
+		
 	jsonAsBytes, _ := json.Marshal(data)
-	err = stub.PutState("me", jsonAsBytes)
+	err = stub.PutState("key1", jsonAsBytes)
 	if err != nil {
 		return nil, errors.New("Error putting data on ledger")
 }
@@ -115,7 +118,7 @@ func (t *SimpleChaincode) read(stub *shim.ChaincodeStub, args []string) (Info, e
     var err error
 		var info Info
 
-    key = args[0]
+    key = "key1"
     valAsbytes, err := stub.GetState(key)
     if err != nil {
 		fmt.Println("Error retrieving info " + key)
