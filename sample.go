@@ -73,7 +73,7 @@ func (t *SimpleChaincode) write(stub *shim.ChaincodeStub, args []string) ([]byte
 
 	jsonAsBytes, _ := json.Marshal(data)
 	fmt.Println(jsonAsBytes)
-	err = stub.PutState("key1", jsonAsBytes)
+	err = stub.PutState("key1", []byte("hello"))
 	if err != nil {
 		return nil, errors.New("Error putting data on ledger")
 }
@@ -116,7 +116,7 @@ func (t *SimpleChaincode) read(stub *shim.ChaincodeStub, args []string) (Info, e
 		fmt.Println("Error retrieving info " + key)
 		return info, errors.New("Error retrieving info " + key)
 	}
-	
+	fmt.Println(valAsbytes)
 	err = json.Unmarshal(valAsbytes, &info)
     if err != nil {
         jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
