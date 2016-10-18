@@ -1,7 +1,7 @@
 package main
 
 import (
-	  "encoding/json"
+		"encoding/json"
 		"errors"
 		"fmt"
 		"github.com/hyperledger/fabric/core/chaincode/shim"
@@ -13,10 +13,10 @@ type SimpleChaincode struct {
 
 //json data format
 type Info struct {
-	thing string `json:"thing"`
-	madeBy string `json:"madeBy"`
-	amount string `json:"amount"`
-  createdAt string `json:"createdAt"`
+	Thing string `json:"thing"`
+	MadeBy string `json:"madeBy"`
+	Amount string `json:"amount"`
+  CreatedAt string `json:"createdAt"`
 }
 
 // ============================================================================================================================
@@ -29,7 +29,7 @@ func main() {
 	}
 }
 
-func (t *SimpleChaincode) Init(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
+func (t *SimpleChaincode) Init(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 
 fmt.Println("Initializing data")
 var blank []string
@@ -44,7 +44,7 @@ var blank []string
 
 }
 
-func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
+func (t *SimpleChaincode) Invoke(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
     fmt.Println("Invoke is running " + function +", with args",len(args))
 
 	if function == "init" {
@@ -56,75 +56,67 @@ func (t *SimpleChaincode) Invoke(stub *shim.ChaincodeStub, function string, args
 	return nil, errors.New("Received unknown invoke function name")
 }
 
+func (t *SimpleChaincode) write(stub shim.ChaincodeStubInterface, args []string) ([]byte, error) {
 
-// Invoke is a no-op
-func (t *SimpleChaincode) write(stub *shim.ChaincodeStub, args []string) ([]byte, error) {
-	var data Info
 	var err error
-
-	if len(args) != 4 {
-		return nil, errors.New("Incorrect number of arguments. Expecting 4")
-	}
-
-	data.thing = args[0]
-	data.madeBy = args[1]
-	data.amount = args[2]
-	data.createdAt = args[3]
-
+	
+	data := Info{
+	Thing:args[0],
+	MadeBy:args[1],
+	Amount:args[2],
+	CreatedAt:args[3]}
+	
 	fmt.Println(data)
 	jsonAsBytes, _ := json.Marshal(data)
 	fmt.Println(jsonAsBytes)
-	err = stub.PutState("key1", []byte("hello"))
+	err = stub.PutState("key1", jsonAsBytes)
 	if err != nil {
 		return nil, errors.New("Error putting data on ledger")
 }
 	return nil, nil
 }
 
-// Query callback representing the query of a chaincode
-func (t *SimpleChaincode) Query(stub *shim.ChaincodeStub, function string, args []string) ([]byte, error) {
+func (t *SimpleChaincode) Query(stub shim.ChaincodeStubInterface, function string, args []string) ([]byte, error) {
 	fmt.Println("query is running " + function)
 
 	// Handle different functions
-	if function == "read" {													//read a variable
+	if function == "read" {
 		info, err := t.read(stub, args)
 		if err != nil {
 			fmt.Println("Error Getting info")
 			return nil, err
 		} else {
-			fmt.Println(info)
 			infoBytes, err1 := json.Marshal(&info)
 			if err1 != nil {
 				fmt.Println("Error marshalling the info")
 				return nil, err1
-			}
-			fmt.Println(infoBytes)	
+			}	
 			fmt.Println("All success, returning the info")
 			return infoBytes, nil		 
 		}
 	}
-	fmt.Println("query did not find func: " + function)						//error
+	fmt.Println("query did not find func: " + function)
 
 	return nil, errors.New("Received unknown function query")
 }
 
-func (t *SimpleChaincode) read(stub *shim.ChaincodeStub, args []string) (Info, error) {
-    var key, jsonResp string
+func (t *SimpleChaincode) read(stub shim.ChaincodeStubInterface, args []string) (Info, error) {
+    var key string
+    var jsonResp string
     var err error
-		var info Info
-
+    var info Info
+    
     key = args[0]
     valAsbytes, err := stub.GetState(key)
     if err != nil {
 		fmt.Println("Error retrieving info " + key)
 		return info, errors.New("Error retrieving info " + key)
 	}
-	fmt.Println(valAsbytes)
 	err = json.Unmarshal(valAsbytes, &info)
-    if err != nil {
+	if err != nil {
         jsonResp = "{\"Error\":\"Failed to get state for " + key + "\"}"
         return info, errors.New(jsonResp)
     }
-
+	
     return info, nil
 }
